@@ -1,0 +1,2 @@
+https://www.crummy.com/software/BeautifulSoup/bs4/doc/#contents-and-children
+https://requests.readthedocs.io/en/latest/
