@@ -17,13 +17,13 @@ table_rows = basic_info_table.find_all('tr')
 datalist = []
 for row in table_rows:
     elements = row.find_all('td')
-    try:
-        elementlist.append([element.text.strip() for element in elements])
-    except:
-        print("error")
+    test = tuple([element.text.strip() for element in elements])
+    datalist.append(test)
+
 
 # todo:
 # work on element pairing, try to use dicts or touples
 # get rid of basic info sublist since we know its the basic info table
 # work on general mapping of key item pairings
 # consistent structure to get ready for multiple pages
+# MAKE MORE COMMITS WHILE WORKING, TOO MUCH CHANGING PER COMMIT
