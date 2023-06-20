@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import concurrent.futures
 
 # understand headers arg better and specify what needed
 headers = {"User-Agent":"Mozilla/5.0"}
@@ -46,10 +47,17 @@ def parse_watch_list(url, brand_list):
 
     # finds all links to watches on the list
     watches = page.find_all('a', 'article-item block-item rcard')
+    
     # parses each watch page
-    for watch in watches:
-        # add brand_list.append() to below when implementing brand_handler
-        brand_list.append(parse_watch_page(chrono24 + watch['href']))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        futures = [
+            executor.submit(parse_watch_page, chrono24 + watch["href"])
+            for watch in watches
+        ]
+        
+        for w in concurrent.futures.as_completed(futures):
+            brand_list.append(w.result())
+        
     #return link to next page, if no next return None
     try:
         next = page.find_all('a','paging-next')[0]
@@ -81,10 +89,6 @@ def test_func(url):
 
 """
 todo
-- try to speed the mf up, possibly slow due to bad internet
-- finalize parse_watch_list:
-    - store data from pages appropriately
-    - return next link
 - fully implement brand_handler
 - do more brands
 - put in excel sheet
