@@ -14,8 +14,8 @@ def parse_watch_page(url):
     :param url: url to a singular watch page
     :return: a list of descriptor/info tuples
     """
-
-    # get page as bs4 html parser
+    print('entering parse_watch_page:' + url)
+    
     html = requests.get(url, headers=headers)
     page = BeautifulSoup(html.content, 'lxml')
     
@@ -37,10 +37,10 @@ def parse_watch_list(url, brand_list):
     """
     function to parse a watch list page
     :param url: url to a page to a list of watches and next butt
-    :return: link to next or NULL if none
+    :return: link to next or None if none
     """
+    print('entering parse_watch_list:' + url)
 
-    # get page as bs4 html parser
     html = requests.get(url, headers=headers)
     page = BeautifulSoup(html.content, 'lxml')
 
@@ -49,19 +49,35 @@ def parse_watch_list(url, brand_list):
     # parses each watch page
     for watch in watches:
         # add brand_list.append() to below when implementing brand_handler
-        parse_watch_page(chrono24 + watch['href'])
-    #return link to next page, if no next return NULL
+        brand_list.append(parse_watch_page(chrono24 + watch['href']))
+    #return link to next page, if no next return None
+    try:
+        next = page.find_all('a','paging-next')[0]
+        print('returning:' + next['href'])
+        return next['href']
+    except:
+        print('no next returning None')
+        return None
 
-"""
+
 def brand_handler(url):
     brand_watches = []
     link = url
-    while(link != NULL):
+    while(link != None):
         link = parse_watch_list(link, brand_watches)
     return brand_watches
-"""
 
-parse_watch_list(watch_list_url)
+
+print(brand_handler(watch_list_url))
+
+
+
+def test_func(url):
+    html = requests.get(url, headers=headers)
+    page = BeautifulSoup(html.content, 'lxml')
+    next = page.find_all('a','paging-next')
+    print(next[0]['href'])
+
 
 """
 todo
